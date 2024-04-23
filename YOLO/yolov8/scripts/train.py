@@ -93,12 +93,12 @@ class YOLOTrainer:
 # Example of how to use the YOLOTrainer class
 if __name__ == '__main__':
     # Set up paths
-    base_dir = Path(__file__).resolve().parent.parent
-    model_path = base_dir / 'util' / 'weights' / 'yolov8m.pt'
-    params_path = base_dir / 'util' / 'hyperparams' / 'yolov8m.yaml'
+    base_dir = Path(__file__).resolve().parent
+    model_path = base_dir / 'weights' / 'yolov8m.pt'
+    params_path = base_dir / 'config-examples' / 'detection-example.yaml'
 
     # Initialize the YOLOTrainer
     trainer = YOLOTrainer(model_path, params_path)
 
     # Run the training process
-    trainer.run("Robocalypse Detection", "romelavision")
+    trainer.run("Robocup24 Detection Training", "romelavision")
