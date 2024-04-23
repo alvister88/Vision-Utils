@@ -1,0 +1,7 @@
+path: # absolute path to your dataset
+train: train\images
+val: valid\images
+
+nc: 0 # number of classes
+names: [] # class names
+

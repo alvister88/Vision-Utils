@@ -1,0 +1,7 @@
+path: C:\Users\User\Box\RoboCup\RoboCup 2024\Teams\Vision\Data\robocup1-1-soccerball
+train: train\images
+val: valid\images
+
+nc: 6
+names: ['Soccer Ball', 'Goal Post', 'Robot', 'L-Intersection', 'T-Intersection', 'X-Intersection']
+

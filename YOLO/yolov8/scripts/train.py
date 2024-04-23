@@ -4,103 +4,101 @@ from wandb.integration.ultralytics import add_wandb_callback
 from pathlib import Path
 import yaml
 
-def load_hyperparameters(yaml_file):
-    """
-    Loads hyperparameters from a YAML file.
+class YOLOTrainer:
+    def __init__(self, model_weights_path, params_file_path):
+        """
+        Initializes the YOLOTrainer class with the directory paths and filenames.
 
-    Args:
-        yaml_file (str): The path to the YAML file containing the hyperparameters.
+        Args:
+            model_weights_path (str): The path to the model weights file.
+            params_file_path (str): The path to the hyperparameters YAML file.
+        """
+        self.model_path = model_weights_path
+        self.params_path = params_file_path
 
-    Returns:
-        dict: A dictionary containing the hyperparameters loaded from the YAML file.
-    """
-    with open(yaml_file, 'r') as file:
-        return yaml.safe_load(file)
+    def load_hyperparameters(self):
+        """
+        Loads hyperparameters from a YAML file.
 
-def create_model(model_path):
-    """
-    Creates a model based on the specified model path.
+        Returns:
+            dict: A dictionary containing the hyperparameters loaded from the YAML file.
+        """
+        with open(self.params_path, 'r') as file:
+            return yaml.safe_load(file)
 
-    Args:
-        model_path (str): The path to the model.
+    def create_model(self):
+        """
+        Creates a YOLO model based on the specified model path.
 
-    Returns:
-        YOLO: A YOLO object representing the created model.
-    """
-    return YOLO(model_path)
+        Returns:
+            YOLO: A YOLO object representing the created model.
+        """
+        return YOLO(self.model_path)
 
-def configure_wandb(project_name, entity_name):
-    """
-    Initializes a wandb run with the specified project name and entity name.
+    def configure_wandb(self, project_name, entity_name):
+        """
+        Initializes a wandb run with the specified project name and entity name.
 
-    Args:
-        project_name (str): The name of the project.
-        entity_name (str): The name of the entity.
+        Args:
+            project_name (str): The name of the project.
+            entity_name (str): The name of the entity.
+        """
+        wandb.init(project=project_name, entity=entity_name, resume="allow")
 
-    Returns:
-        None
-    """
-    wandb.init(project=project_name, entity=entity_name, resume="allow")
+    def train_model(self, model, hyperparams):
+        """
+        Trains a model using the provided hyperparameters.
 
-def train_model(model, hyperparams):
-    """
-    Trains a model using the provided hyperparameters.
+        Args:
+            model (YOLO): The model to be trained.
+            hyperparams (dict): A dictionary containing the hyperparameters for training.
 
-    Args:
-        model (object): The model to be trained.
-        hyperparams (dict): A dictionary containing the hyperparameters for training.
+        Returns:
+            list: The results of the training.
+        """
+        return model.train(**hyperparams)
 
-    Returns:
-        object: The trained model.
-    """
-    return model.train(**hyperparams)
+    def log_metrics_and_mosaic_to_wandb(self, model, results):
+        """
+        Logs metrics and a mosaic image to wandb for each epoch of the training process.
 
-def log_metrics_and_mosaic_to_wandb(model, results):
-    """
-    Logs metrics and a mosaic image to wandb for each epoch of the training process.
+        Args:
+            model (YOLO): The YOLO model used for validation inference.
+            results (list): A list of dictionaries containing metrics for each epoch.
+        """
+        for epoch, metrics in enumerate(results):
+            wandb.log(metrics)
+            mosaic = model.val(verbose=False, imgsz=640)
+            wandb_image = wandb.Image(mosaic, caption=f"Validation Mosaic - Epoch {epoch + 1}")
+            wandb.log({"Validation Mosaic": wandb_image})
 
-    Args:
-        model (YOLO): The YOLO model used for validation inference.
-        results (list): A list of dictionaries containing metrics for each epoch.
+    def run(self, project_name, entity_name):
+        """
+        Executes the complete training process from initializing wandb to training and logging.
 
-    Returns:
-        None
-    """
-    for epoch, metrics in enumerate(results):
-        # Log the metrics for the epoch
-        wandb.log(metrics)
+        Args:
+            project_name (str): The name of the project.
+            entity_name (str): The name of the entity.
+        """
+        hyperparams = self.load_hyperparameters()
+        model = self.create_model()
+        self.configure_wandb(project_name, entity_name)
 
-        # Generate the mosaic of the validation inference
-        mosaic = model.val(verbose=False, imgsz=640)
+        try:
+            results = self.train_model(model, hyperparams)
+            self.log_metrics_and_mosaic_to_wandb(model, results)
+        finally:
+            wandb.finish()
 
-        # Log the mosaic image to wandb
-        wandb_image = wandb.Image(mosaic, caption=f"Validation Mosaic - Epoch {epoch + 1}")
-        wandb.log({"Validation Mosaic": wandb_image})
-
-def main():
+# Example of how to use the YOLOTrainer class
+if __name__ == '__main__':
     # Set up paths
     base_dir = Path(__file__).resolve().parent.parent
     model_path = base_dir / 'util' / 'weights' / 'yolov8m.pt'
-    params_path = base_dir / 'util' / 'args.yaml'
+    params_path = base_dir / 'util' / 'hyperparams' / 'yolov8m.yaml'
 
-    # Load hyperparameters from YAML file
-    hyperparams = load_hyperparameters(params_path)
+    # Initialize the YOLOTrainer
+    trainer = YOLOTrainer(model_path, params_path)
 
-    # Create the YOLOv8 model
-    model = create_model(model_path)
-
-    # Configure wandb
-    configure_wandb("Robocup24 Detection Training", "romelavision")
-
-    try:
-        # Train the model with hyperparameters
-        results = train_model(model, hyperparams)
-
-        # Log metrics and mosaic to wandb
-        log_metrics_and_mosaic_to_wandb(model, results)
-    finally:
-        # Finish the wandb run
-        wandb.finish()
-
-if __name__ == '__main__':
-    main()
+    # Run the training process
+    trainer.run("Robocalypse Detection", "romelavision")
