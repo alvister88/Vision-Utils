@@ -69,7 +69,7 @@ def log_metrics_to_wandb(results):
 
 def main():
     # Set up paths
-    base_dir = Path(__file__).resolve().parent.parent
+    base_dir = Path(__file__).resolve().parent
     model_path = base_dir / ''
     params_path = base_dir / ''
 
