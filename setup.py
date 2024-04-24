@@ -16,7 +16,7 @@ with open('requirements.txt') as f:
 setup(
     name='visionml_utils',
     version='0.0.0',
-    description='Util scripts and files for computer vision deep learning model training.',
+    description='Util scripts and files for computer vision deep learning models.',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     author='Alvin Zhu',
@@ -26,7 +26,6 @@ setup(
     install_requires=requirements,
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Framework :: Robot Framework',
         'Intended Audience :: Developers',
         'Intended Audience :: Education',
         'Intended Audience :: Science/Research',
