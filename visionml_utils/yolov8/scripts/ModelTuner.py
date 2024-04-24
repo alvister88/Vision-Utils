@@ -57,18 +57,19 @@ class ModelTuner:
         """
         return model.tune(**hyperparams)
 
-    def log_metrics_to_wandb(self, results):
+    def log_metrics_and_mosaic_to_wandb(self, model, results):
         """
-        Logs metrics to wandb for each epoch of the tuning process.
+        Logs metrics and a mosaic image to wandb for each epoch of the training process.
 
         Args:
+            model (YOLO): The YOLO model used for validation inference.
             results (list): A list of dictionaries containing metrics for each epoch.
-
-        Returns:
-            None
         """
         for epoch, metrics in enumerate(results):
             wandb.log(metrics)
+            mosaic = model.val(verbose=False, imgsz=640)
+            wandb_image = wandb.Image(mosaic, caption=f"Validation Mosaic - Epoch {epoch + 1}")
+            wandb.log({"Validation Mosaic": wandb_image})
 
     def run(self, project_name, entity_name):
         """
@@ -84,7 +85,7 @@ class ModelTuner:
 
         try:
             results = self.tune_model(model, hyperparams)
-            self.log_metrics_to_wandb(results)
+            self.log_metrics_and_mosaic_to_wandb(results)
         finally:
             wandb.finish()
 
