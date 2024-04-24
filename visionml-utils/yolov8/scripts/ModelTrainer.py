@@ -4,7 +4,7 @@ from wandb.integration.ultralytics import add_wandb_callback
 from pathlib import Path
 import yaml
 
-class YOLOTrainer:
+class ModelTrainer:
     def __init__(self, model_weights_path, params_file_path):
         """
         Initializes the YOLOTrainer class with the directory paths and filenames.
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     params_path = base_dir / 'config-examples' / 'detection-example.yaml'
 
     # Initialize the YOLOTrainer
-    trainer = YOLOTrainer(model_path, params_path)
+    trainer = ModelTrainer(model_path, params_path)
 
     # Run the training process
     trainer.run("Robocup24 Detection Training", "romelavision")
