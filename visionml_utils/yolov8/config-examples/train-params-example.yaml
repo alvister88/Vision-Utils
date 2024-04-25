@@ -1,4 +1,4 @@
-data: robocup-train.yaml
+data: ../config-examples/detection-example.yaml # path to data.yaml file relative to your training scripts dir
 epochs: 30
 batch: 50
 patience: 10

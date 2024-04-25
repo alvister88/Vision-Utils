@@ -5,7 +5,7 @@ from pathlib import Path
 import yaml
 
 class ModelTrainer:
-    def __init__(self, model_weights_path, config_file_path, hyperparams_file_path):
+    def __init__(self, model_weights_path, hyperparams_file_path):
         """
         Initializes the YOLOTrainer class with the directory paths and filenames.
 
@@ -14,7 +14,6 @@ class ModelTrainer:
             params_file_path (str): The path to the hyperparameters YAML file.
         """
         self.model_path = model_weights_path
-        self.config_path = config_file_path
         self.hyperparams_path = hyperparams_file_path
 
     def load_hyperparameters(self):
@@ -96,11 +95,10 @@ if __name__ == '__main__':
     # Set up paths
     base_dir = Path(__file__).resolve().parent
     model_path = base_dir / 'weights' / 'yolov8m.pt'
-    config_path = base_dir / 'config-examples' / 'detection-example.yaml'
     hyperparams_path = base_dir / 'config-examples' / 'train-params-example.yaml'
 
     # Initialize the YOLOTrainer
-    trainer = ModelTrainer(model_path, config_path, hyperparams_path)
+    trainer = ModelTrainer(model_path, hyperparams_path)
 
     # Run the training process
     trainer.run("Robocup24 Detection Training", "romelavision")
