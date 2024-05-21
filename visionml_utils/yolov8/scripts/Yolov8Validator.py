@@ -2,7 +2,7 @@ import wandb
 from ultralytics import YOLO
 from pathlib import Path
 
-class ModelValidator:
+class Yolov8Validator:
     def __init__(self, model_weights_path):
         """
         Initializes the ModelValidator with the full path to the model weights.

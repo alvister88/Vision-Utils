@@ -1,20 +1,19 @@
 import wandb
 from ultralytics import YOLO
-from wandb.integration.ultralytics import add_wandb_callback
 from pathlib import Path
 import yaml
 
-class ModelTrainer:
-    def __init__(self, model_weights_path, hyperparams_file_path):
+class Yolov8Tuner:
+    def __init__(self, model_weights_path, params_file_path):
         """
-        Initializes the YOLOTrainer class with the directory paths and filenames.
+        Initializes the ModelTuner class with the paths to the model weights and parameter files.
 
         Args:
             model_weights_path (str): The path to the model weights file.
             params_file_path (str): The path to the hyperparameters YAML file.
         """
         self.model_path = model_weights_path
-        self.hyperparams_path = hyperparams_file_path
+        self.params_path = params_file_path
 
     def load_hyperparameters(self):
         """
@@ -23,7 +22,7 @@ class ModelTrainer:
         Returns:
             dict: A dictionary containing the hyperparameters loaded from the YAML file.
         """
-        with open(self.hyperparams_path, 'r') as file:
+        with open(self.params_path, 'r') as file:
             return yaml.safe_load(file)
 
     def create_model(self):
@@ -45,18 +44,18 @@ class ModelTrainer:
         """
         wandb.init(project=project_name, entity=entity_name, resume="allow")
 
-    def train_model(self, model, hyperparams):
+    def tune_model(self, model, hyperparams):
         """
-        Trains a model using the provided hyperparameters.
+        Tunes a model using the provided hyperparameters.
 
         Args:
-            model (YOLO): The model to be trained.
-            hyperparams (dict): A dictionary containing the hyperparameters for training.
+            model (YOLO): The model to be tuned.
+            hyperparams (dict): A dictionary containing the hyperparameters for tuning.
 
         Returns:
-            list: The results of the training.
+            list: A list of dictionaries containing metrics for each epoch.
         """
-        return model.train(**hyperparams)
+        return model.tune(**hyperparams)
 
     def log_metrics_and_mosaic_to_wandb(self, model, results):
         """
@@ -74,7 +73,7 @@ class ModelTrainer:
 
     def run(self, project_name, entity_name):
         """
-        Executes the complete training process from initializing wandb to training and logging.
+        Executes the complete tuning process from initializing wandb to tuning the model and logging results.
 
         Args:
             project_name (str): The name of the project.
@@ -85,20 +84,20 @@ class ModelTrainer:
         self.configure_wandb(project_name, entity_name)
 
         try:
-            results = self.train_model(model, hyperparams)
-            self.log_metrics_and_mosaic_to_wandb(model, results)
+            results = self.tune_model(model, hyperparams)
+            self.log_metrics_and_mosaic_to_wandb(results)
         finally:
             wandb.finish()
 
-# Example of how to use the YOLOTrainer class
+# Example of how to use the ModelTuner class
 if __name__ == '__main__':
     # Set up paths
     base_dir = Path(__file__).resolve().parent
-    model_path = base_dir / 'weights' / 'yolov8m.pt'
-    hyperparams_path = base_dir / 'config-examples' / 'train-params-example.yaml'
+    model_weights_path = base_dir / 'weights' / 'yolov8m.pt'
+    params_file_path = base_dir / 'config-examples' / 'tuning-example.yaml'
 
-    # Initialize the YOLOTrainer
-    trainer = ModelTrainer(model_path, hyperparams_path)
+    # Initialize the ModelTuner
+    tuner = ModelTuner(model_weights_path, params_file_path)
 
-    # Run the training process
-    trainer.run("Robocup24 Detection Training", "romelavision")
+    # Run the tuning process
+    tuner.run("Robocup24 Detection Tuning", "romelavision")

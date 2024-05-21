@@ -2,7 +2,7 @@ import cv2
 from pathlib import Path
 from ultralytics import YOLO  # Adjust this import according to your YOLO version
 
-class VideoProcessor:
+class Yolov8VideoProcessor:
     def __init__(self, model_weights_path, video_path, output_path):
         """
         Initializes the VideoProcessor with specific paths for model weights and video file.
