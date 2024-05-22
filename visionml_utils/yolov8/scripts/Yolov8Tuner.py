@@ -97,7 +97,7 @@ if __name__ == '__main__':
     params_file_path = base_dir / 'config-examples' / 'tuning-example.yaml'
 
     # Initialize the ModelTuner
-    tuner = ModelTuner(model_weights_path, params_file_path)
+    tuner = Yolov8Tuner(model_weights_path, params_file_path)
 
     # Run the tuning process
     tuner.run("Robocup24 Detection Tuning", "romelavision")

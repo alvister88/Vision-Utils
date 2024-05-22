@@ -38,6 +38,6 @@ if __name__ == '__main__':
     data_filename = ''
     image_size = 640
 
-    validator = ModelValidator(model_weights_path)
+    validator = Yolov8Validator(model_weights_path)
     results = validator.perform_validation(data_filename, image_size)
 

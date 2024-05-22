@@ -98,7 +98,7 @@ if __name__ == '__main__':
     hyperparams_path = base_dir / 'config-examples' / 'train-params-example.yaml'
 
     # Initialize the YOLOTrainer
-    trainer = ModelTrainer(model_path, hyperparams_path)
+    trainer = Yolov8Trainer(model_path, hyperparams_path)
 
     # Run the training process
     trainer.run("Robocup24 Detection Training", "romelavision")

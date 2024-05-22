@@ -70,5 +70,5 @@ if __name__ == '__main__':
     output_path = str(base_dir / 'video outputs' / 'IMG_0197(robocup1-15-tune13).mp4')
 
     # Create and use the VideoProcessor
-    processor = VideoProcessor(model_weights_path, video_path, output_path)
+    processor = Yolov8VideoProcessor(model_weights_path, video_path, output_path)
     processor.process_video()
