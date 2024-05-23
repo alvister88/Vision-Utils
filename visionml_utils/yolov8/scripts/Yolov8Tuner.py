@@ -94,7 +94,7 @@ if __name__ == '__main__':
     # Set up paths
     base_dir = Path(__file__).resolve().parent
     model_weights_path = base_dir / 'weights' / 'yolov8m.pt'
-    params_file_path = base_dir / 'config-examples' / 'tuning-example.yaml'
+    params_file_path = base_dir / 'config-examples' / 'tune-params-example.yaml'
 
     # Initialize the ModelTuner
     tuner = Yolov8Tuner(model_weights_path, params_file_path)
