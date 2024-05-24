@@ -35,7 +35,7 @@ class Yolov8Trainer:
         """
         return YOLO(self.model_path)
 
-    def configure_wandb(self, project_name, entity_name):
+    def configure_wandb(self, project_name, entity_name, run_name):
         """
         Initializes a wandb run with the specified project name and entity name.
 
@@ -43,7 +43,7 @@ class Yolov8Trainer:
             project_name (str): The name of the project.
             entity_name (str): The name of the entity.
         """
-        wandb.init(project=project_name, entity=entity_name, resume="allow")
+        wandb.init(project=project_name, entity=entity_name, name=run_name, resume="allow")
 
     def train_model(self, model, hyperparams):
         """
@@ -72,7 +72,7 @@ class Yolov8Trainer:
             wandb_image = wandb.Image(mosaic, caption=f"Validation Mosaic - Epoch {epoch + 1}")
             wandb.log({"Validation Mosaic": wandb_image})
 
-    def run(self, project_name, entity_name):
+    def run(self, project_name, entity_name, run_name):
         """
         Executes the complete training process from initializing wandb to training and logging.
 
@@ -82,7 +82,7 @@ class Yolov8Trainer:
         """
         hyperparams = self.load_hyperparameters()
         model = self.create_model()
-        self.configure_wandb(project_name, entity_name)
+        self.configure_wandb(project_name, entity_name, run_name)
 
         try:
             results = self.train_model(model, hyperparams)
@@ -96,9 +96,10 @@ if __name__ == '__main__':
     base_dir = Path(__file__).resolve().parent.parent
     model_path = base_dir / 'weights' / 'yolov8m.pt'
     hyperparams_path = base_dir / 'config-examples' / 'train-params-example.yaml'
+    run_name = 'test-weights'
 
     # Initialize the YOLOTrainer
     trainer = Yolov8Trainer(model_path, hyperparams_path)
 
     # Run the training process
-    trainer.run("Robocup24 Detection Training", "romelavision")
+    trainer.run("Robocup24 Detection Training", "romelavision", run_name)

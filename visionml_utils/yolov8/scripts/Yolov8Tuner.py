@@ -34,7 +34,7 @@ class Yolov8Tuner:
         """
         return YOLO(self.model_path)
 
-    def configure_wandb(self, project_name, entity_name):
+    def configure_wandb(self, project_name, entity_name, run_name):
         """
         Initializes a wandb run with the specified project name and entity name.
 
@@ -42,7 +42,7 @@ class Yolov8Tuner:
             project_name (str): The name of the project.
             entity_name (str): The name of the entity.
         """
-        wandb.init(project=project_name, entity=entity_name, resume="allow")
+        wandb.init(project=project_name, entity=entity_name, name=run_name, resume="allow")
 
     def tune_model(self, model, hyperparams):
         """
@@ -71,7 +71,7 @@ class Yolov8Tuner:
             wandb_image = wandb.Image(mosaic, caption=f"Validation Mosaic - Epoch {epoch + 1}")
             wandb.log({"Validation Mosaic": wandb_image})
 
-    def run(self, project_name, entity_name):
+    def run(self, project_name, entity_name, run_name):
         """
         Executes the complete tuning process from initializing wandb to tuning the model and logging results.
 
@@ -81,7 +81,7 @@ class Yolov8Tuner:
         """
         hyperparams = self.load_hyperparameters()
         model = self.create_model()
-        self.configure_wandb(project_name, entity_name)
+        self.configure_wandb(project_name, entity_name, run_name)
 
         try:
             results = self.tune_model(model, hyperparams)
@@ -95,9 +95,10 @@ if __name__ == '__main__':
     base_dir = Path(__file__).resolve().parent.parent
     model_weights_path = base_dir / 'weights' / 'yolov8m.pt'
     params_file_path = base_dir / 'config-examples' / 'tune-params-example.yaml'
+    run_name = 'tune-weights0'
 
     # Initialize the ModelTuner
     tuner = Yolov8Tuner(model_weights_path, params_file_path)
 
     # Run the tuning process
-    tuner.run("Robocup24 Detection Tuning", "romelavision")
+    tuner.run("Robocup24 Detection Tuning", "romelavision", run_name)
