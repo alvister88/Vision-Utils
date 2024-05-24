@@ -93,7 +93,7 @@ class Yolov8Trainer:
 # Example of how to use the YOLOTrainer class
 if __name__ == '__main__':
     # Set up paths
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     model_path = base_dir / 'weights' / 'yolov8m.pt'
     hyperparams_path = base_dir / 'config-examples' / 'train-params-example.yaml'
 

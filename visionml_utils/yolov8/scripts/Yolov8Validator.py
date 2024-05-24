@@ -33,7 +33,7 @@ class Yolov8Validator:
 # Usage example
 if __name__ == '__main__':
     # Define the paths and parameters outside the class
-    base_directory = Path(__file__).resolve().parent
+    base_directory = Path(__file__).resolve().parent.parent
     model_weights_path = base_directory / 'weights' / ''
     data_filename = ''
     image_size = 640

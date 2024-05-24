@@ -64,7 +64,7 @@ class Yolov8VideoProcessor:
 # Example Usage
 if __name__ == '__main__':
     # Define base directory and other parameters
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     model_weights_path = str(base_dir / 'weights' / 'robocup1-15-tune13.pt')
     video_path = str(base_dir / 'videos' / 'IMG_0197.MOV')
     output_path = str(base_dir / 'video outputs' / 'IMG_0197(robocup1-15-tune13).mp4')

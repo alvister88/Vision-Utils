@@ -92,7 +92,7 @@ class Yolov8Tuner:
 # Example of how to use the ModelTuner class
 if __name__ == '__main__':
     # Set up paths
-    base_dir = Path(__file__).resolve().parent
+    base_dir = Path(__file__).resolve().parent.parent
     model_weights_path = base_dir / 'weights' / 'yolov8m.pt'
     params_file_path = base_dir / 'config-examples' / 'tune-params-example.yaml'
 
