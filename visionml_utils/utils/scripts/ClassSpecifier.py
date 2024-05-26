@@ -2,7 +2,7 @@ import os
 import re
 
 class ClassSpecifier():
-    def specify_class(folder_path, new_class):
+    def specify_class(self, folder_path, new_class):
         """
         Modifies the class identifier on the first line of each text file to the new_class.
 
@@ -41,3 +41,6 @@ def main():
     new_class = 0  # The new number to replace with
     specifier.specify_class(folder_path_train, new_class)
     specifier.specify_class(folder_path_valid, new_class)
+
+if __name__ == '__main__':
+    main()
